@@ -22,7 +22,12 @@ class AnimationViewController: UIViewController {
     
     @IBOutlet private weak var control: UIView!
     @IBOutlet private weak var closedTitleLabel: UILabel!
-    @IBOutlet private weak var openTitleLabel: UILabel!
+    @IBOutlet private weak var openTitleLabel: UILabel! {
+        didSet {
+            openTitleLabel.alpha = 0
+            openTitleLabel.transform = CGAffineTransform(scaleX: 0.75, y: 0.75).concatenating(CGAffineTransform(translationX: 0, y: -10))
+        }
+    }
     @IBOutlet private weak var blurEffectView: UIVisualEffectView! {
         didSet {
             blurEffect = blurEffectView.effect
@@ -75,7 +80,7 @@ class AnimationViewController: UIViewController {
     private func isGestureCancelled(_ recognizer: UIPanGestureRecognizer) -> Bool {
         let isCancelled: Bool
         
-        let velocityY = recognizer.velocity(in: view).y
+        let velocityY = recognizer.velocity(in: control).y
         if velocityY != 0 {
             let isPanningDown = velocityY > 0
             isCancelled = (state == .expanded && isPanningDown) ||
@@ -101,16 +106,16 @@ class AnimationViewController: UIViewController {
             }
             
         }
-        runningAnimators?.scrubsLinearly = false
+        
     }
 
     private func updateLabelTranslation(for state: State) {
         switch state {
         case .collapsed:
             self.closedTitleLabel.transform = .identity
-            self.openTitleLabel.transform = CGAffineTransform(scaleX: 0.65, y: 0.65).concatenating(CGAffineTransform(translationX: 0, y: -15))
+            self.openTitleLabel.transform = CGAffineTransform(scaleX: 0.75, y: 0.75).concatenating(CGAffineTransform(translationX: 0, y: -10))
         case .expanded:
-            self.closedTitleLabel.transform = CGAffineTransform(scaleX: 1.6, y: 1.6).concatenating(CGAffineTransform(translationX: 0, y: 15))
+            self.closedTitleLabel.transform = CGAffineTransform(scaleX: 1.35, y: 1.35).concatenating(CGAffineTransform(translationX: 0, y: 10))
             self.openTitleLabel.transform = .identity
         }
     }

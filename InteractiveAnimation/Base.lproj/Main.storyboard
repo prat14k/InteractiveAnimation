@@ -39,7 +39,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AbM-8C-J5L">
-                                        <rect key="frame" x="136" y="15" width="103.5" height="24"/>
+                                        <rect key="frame" x="136" y="20" width="103.5" height="24"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -51,7 +51,7 @@
                                     <constraint firstItem="TnG-Oq-GNR" firstAttribute="centerX" secondItem="Nte-Kb-KOT" secondAttribute="centerX" id="GpS-Kt-EI4"/>
                                     <constraint firstItem="TnG-Oq-GNR" firstAttribute="top" secondItem="Nte-Kb-KOT" secondAttribute="top" constant="15" id="WJb-hM-bFW"/>
                                     <constraint firstItem="AbM-8C-J5L" firstAttribute="centerX" secondItem="Nte-Kb-KOT" secondAttribute="centerX" id="Zom-3A-Aeg"/>
-                                    <constraint firstItem="AbM-8C-J5L" firstAttribute="top" secondItem="Nte-Kb-KOT" secondAttribute="top" constant="15" id="xFY-m7-JU8"/>
+                                    <constraint firstItem="AbM-8C-J5L" firstAttribute="top" secondItem="Nte-Kb-KOT" secondAttribute="top" constant="20" id="xFY-m7-JU8"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
