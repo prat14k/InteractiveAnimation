@@ -21,6 +21,8 @@ private prefix func !(_ state: State) -> State {
 class AnimationViewController: UIViewController {
     
     @IBOutlet private weak var control: UIView!
+    @IBOutlet private weak var closedTitleLabel: UILabel!
+    @IBOutlet private weak var openTitleLabel: UILabel!
     @IBOutlet private weak var blurEffectView: UIVisualEffectView! {
         didSet {
             blurEffect = blurEffectView.effect
@@ -29,6 +31,12 @@ class AnimationViewController: UIViewController {
     }
     @IBOutlet private weak var controlTopConstraint: NSLayoutConstraint!
 
+    
+    private var runningAnimators: UIViewPropertyAnimator?
+    
+    private var progressWhenInterrupted: CGFloat!
+    
+    
     private var blurEffect: UIVisualEffect?
     
     private var state: State = .collapsed
@@ -81,13 +89,6 @@ class AnimationViewController: UIViewController {
     }
     
     
-//    private var runningAnimators = [UIViewPropertyAnimator]()
-    
-    private var runningAnimators: UIViewPropertyAnimator?
-    
-    private var progressWhenInterrupted: CGFloat!
-    
-    
     private func animateTransitionIfNeeded(state: State, duration: TimeInterval) {
         if runningAnimators == nil {
             self.state = state
@@ -96,12 +97,25 @@ class AnimationViewController: UIViewController {
             addToRunnningAnimators(frameAnimator) {
                 self.updateFrame(for: self.state)
                 self.updateBlurView(for: self.state)
+                self.updateLabel(for: self.state)
             }
             
         }
+        runningAnimators?.scrubsLinearly = false
     }
-    
-    
+
+    private func updateLabelTranslation(for state: State) {
+        switch state {
+        case .collapsed:
+            self.closedTitleLabel.transform = .identity
+            self.openTitleLabel.transform = CGAffineTransform(scaleX: 0.65, y: 0.65).concatenating(CGAffineTransform(translationX: 0, y: -15))
+        case .expanded:
+            self.closedTitleLabel.transform = CGAffineTransform(scaleX: 1.6, y: 1.6).concatenating(CGAffineTransform(translationX: 0, y: 15))
+            self.openTitleLabel.transform = .identity
+        }
+    }
+
+
     private func animateOrReverseRunningTransition(state: State, duration: TimeInterval) {
         if runningAnimators == nil {
             animateTransitionIfNeeded(state: state, duration: duration)
@@ -167,6 +181,18 @@ class AnimationViewController: UIViewController {
         }
         
         view.layoutIfNeeded()
+    }
+
+    private func updateLabel(for state: State) {
+        updateLabelTranslation(for: state)
+        switch state {
+        case .collapsed:
+            self.closedTitleLabel.alpha = 1
+            self.openTitleLabel.alpha = 0
+        case .expanded:
+            self.closedTitleLabel.alpha = 0
+            self.openTitleLabel.alpha = 1
+        }
     }
     
     
