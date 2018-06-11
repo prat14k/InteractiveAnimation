@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Animation View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="AnimationViewController" customModule="InteractiveAnimation" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backGround" translatesAutoresizingMaskIntoConstraints="NO" id="EIm-vz-2CL">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            </imageView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GT6-OM-ZkD">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="voI-uv-uEq">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nte-Kb-KOT">
+                                <rect key="frame" x="-0.5" y="617" width="375" height="617"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TnG-Oq-GNR">
+                                        <rect key="frame" x="148.5" y="15" width="79.5" height="18"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstItem="TnG-Oq-GNR" firstAttribute="centerX" secondItem="Nte-Kb-KOT" secondAttribute="centerX" id="GpS-Kt-EI4"/>
+                                    <constraint firstItem="TnG-Oq-GNR" firstAttribute="top" secondItem="Nte-Kb-KOT" secondAttribute="top" constant="15" id="WJb-hM-bFW"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="l0F-Pz-otp" appends="YES" id="irk-1z-d9q"/>
+                                    <outletCollection property="gestureRecognizers" destination="52B-s5-t8Y" appends="YES" id="Eeb-pY-FsJ"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="GT6-OM-ZkD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="5bi-ni-0rC"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GT6-OM-ZkD" secondAttribute="trailing" id="7TW-oU-ayv"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Nte-Kb-KOT" secondAttribute="top" constant="50" id="AIm-FY-t4J"/>
+                            <constraint firstItem="Nte-Kb-KOT" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="Bwu-Tf-6Hp"/>
+                            <constraint firstItem="GT6-OM-ZkD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FP3-6d-Tem"/>
+                            <constraint firstItem="EIm-vz-2CL" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Hy6-7n-ER2"/>
+                            <constraint firstItem="EIm-vz-2CL" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="V5M-4q-alX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="EIm-vz-2CL" secondAttribute="bottom" id="Vbr-NW-PIU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="GT6-OM-ZkD" secondAttribute="bottom" id="g3n-Ki-mLa"/>
+                            <constraint firstItem="Nte-Kb-KOT" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="iAA-vH-Hpi"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="EIm-vz-2CL" secondAttribute="trailing" id="knm-nn-Mej"/>
+                            <constraint firstItem="Nte-Kb-KOT" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" constant="-50" id="vfR-Kp-Ri6"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="blurEffectView" destination="GT6-OM-ZkD" id="sDw-Lu-wJv"/>
+                        <outlet property="control" destination="Nte-Kb-KOT" id="AP9-db-RIO"/>
+                        <outlet property="controlTopConstraint" destination="AIm-FY-t4J" id="TMD-UW-Xjk"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="l0F-Pz-otp">
+                    <connections>
+                        <action selector="handlePan:" destination="BYZ-38-t0r" id="EV2-F8-j5f"/>
+                    </connections>
+                </panGestureRecognizer>
+                <tapGestureRecognizer id="52B-s5-t8Y">
+                    <connections>
+                        <action selector="handleTap:" destination="BYZ-38-t0r" id="fwe-wF-TQR"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="backGround" width="326" height="610"/>
+    </resources>
+</document>
