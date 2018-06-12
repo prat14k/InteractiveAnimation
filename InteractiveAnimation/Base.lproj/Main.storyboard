@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -30,7 +29,7 @@
                                 <blurEffect style="light"/>
                             </visualEffectView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nte-Kb-KOT">
-                                <rect key="frame" x="-0.5" y="617" width="375" height="617"/>
+                                <rect key="frame" x="0.0" y="617" width="375" height="617"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TnG-Oq-GNR">
                                         <rect key="frame" x="148.5" y="15" width="79.5" height="18"/>
@@ -84,8 +83,8 @@
                     <connections>
                         <outlet property="blurEffectView" destination="GT6-OM-ZkD" id="sDw-Lu-wJv"/>
                         <outlet property="closedTitleLabel" destination="TnG-Oq-GNR" id="aCJ-0B-9jN"/>
-                        <outlet property="control" destination="Nte-Kb-KOT" id="AP9-db-RIO"/>
                         <outlet property="controlTopConstraint" destination="AIm-FY-t4J" id="TMD-UW-Xjk"/>
+                        <outlet property="drawer" destination="Nte-Kb-KOT" id="AP9-db-RIO"/>
                         <outlet property="openTitleLabel" destination="AbM-8C-J5L" id="bRb-ki-a5v"/>
                     </connections>
                 </viewController>

@@ -11,6 +11,7 @@
 		ABD4DC4120CABC990096A2A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABD4DC3F20CABC990096A2A7 /* Main.storyboard */; };
 		ABD4DC4320CABC9B0096A2A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ABD4DC4220CABC9B0096A2A7 /* Assets.xcassets */; };
 		ABD4DC4620CABC9B0096A2A7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABD4DC4420CABC9B0096A2A7 /* LaunchScreen.storyboard */; };
+		ABD7A65C20CF9B17007406F3 /* DrawerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD7A65B20CF9B17007406F3 /* DrawerState.swift */; };
 		ABF33FC520CDAD820026F99D /* AnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF33FC420CDAD820026F99D /* AnimationViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +22,7 @@
 		ABD4DC4220CABC9B0096A2A7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ABD4DC4520CABC9B0096A2A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ABD4DC4720CABC9B0096A2A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ABD7A65B20CF9B17007406F3 /* DrawerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawerState.swift; sourceTree = "<group>"; };
 		ABF33FC420CDAD820026F99D /* AnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,6 +62,7 @@
 				ABD4DC4420CABC9B0096A2A7 /* LaunchScreen.storyboard */,
 				ABD4DC4720CABC9B0096A2A7 /* Info.plist */,
 				ABF33FC420CDAD820026F99D /* AnimationViewController.swift */,
+				ABD7A65B20CF9B17007406F3 /* DrawerState.swift */,
 			);
 			path = InteractiveAnimation;
 			sourceTree = "<group>";
@@ -135,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABD7A65C20CF9B17007406F3 /* DrawerState.swift in Sources */,
 				ABD4DC3C20CABC990096A2A7 /* AppDelegate.swift in Sources */,
 				ABF33FC520CDAD820026F99D /* AnimationViewController.swift in Sources */,
 			);
@@ -281,7 +285,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 754Y5932HF;
 				INFOPLIST_FILE = InteractiveAnimation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -298,7 +304,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 754Y5932HF;
 				INFOPLIST_FILE = InteractiveAnimation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

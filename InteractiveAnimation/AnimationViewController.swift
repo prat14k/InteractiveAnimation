@@ -9,23 +9,23 @@
 import UIKit
 
 
-private enum State {
-    case expanded
-    case collapsed
-}
-
-private prefix func !(_ state: State) -> State {
-    return state == State.expanded ? .collapsed : .expanded
-}
-
 class AnimationViewController: UIViewController {
     
-    @IBOutlet private weak var control: UIView!
+    private let duration: TimeInterval = 1
+    var closedDrawerTitleScale: CGFloat!
+    var closedDrawerTitleTranslation: CGFloat!
+    
+    private var viewPropertyAnimator: UIViewPropertyAnimator?
+    private var progressWhenInterrupted: CGFloat!
+    private var blurEffect: UIVisualEffect?
+    private var state: DrawerState = .collapsed
+    
+    
+    @IBOutlet private weak var controlTopConstraint: NSLayoutConstraint!
     @IBOutlet private weak var closedTitleLabel: UILabel!
     @IBOutlet private weak var openTitleLabel: UILabel! {
         didSet {
             openTitleLabel.alpha = 0
-            openTitleLabel.transform = CGAffineTransform(scaleX: 0.75, y: 0.75).concatenating(CGAffineTransform(translationX: 0, y: -10))
         }
     }
     @IBOutlet private weak var blurEffectView: UIVisualEffectView! {
@@ -34,32 +34,48 @@ class AnimationViewController: UIViewController {
             blurEffectView.effect = nil
         }
     }
-    @IBOutlet private weak var controlTopConstraint: NSLayoutConstraint!
-
-    
-    private var runningAnimators: UIViewPropertyAnimator?
-    
-    private var progressWhenInterrupted: CGFloat!
-    
-    
-    private var blurEffect: UIVisualEffect?
-    
-    private var state: State = .collapsed
-    
-    lazy private var expandedControlTopMargin: CGFloat = {
-        return self.view.bounds.height - 50
-    }()
-    private let collapsedControlTopMargin: CGFloat = 50
-    private let duration: TimeInterval = 1
-    
-
-    
-    
-    @IBAction func handleTap(_ recognizer: UITapGestureRecognizer) {
-        animateOrReverseRunningTransition(state: !state, duration: duration)
+    @IBOutlet private weak var drawer: UIView! {
+        didSet {
+            drawer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            drawer.layer.cornerRadius = 0
+            drawer.layer.masksToBounds = true
+        }
     }
     
-    @IBAction func handlePan(_ recognizer: UIPanGestureRecognizer) {
+    
+    lazy private var expandedControlTopMargin: CGFloat = {
+        return drawer.bounds.height
+    }()
+    private let collapsedControlTopMargin: CGFloat = 50
+    
+}
+
+    
+extension AnimationViewController {
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        calculationForTitleReshaping()
+        setOpenDrawerTitleInitialState()
+    }
+    
+    
+    func setOpenDrawerTitleInitialState(){
+        openTitleLabel.transform = CGAffineTransform(scaleX: closedDrawerTitleScale, y: closedDrawerTitleScale).concatenating(CGAffineTransform(translationX: 0, y: -closedDrawerTitleTranslation))
+    }
+    
+    
+    func calculationForTitleReshaping() {
+        closedDrawerTitleScale = closedTitleLabel.bounds.height / openTitleLabel.bounds.height
+        closedDrawerTitleTranslation = (openTitleLabel.frame.origin.y - (closedTitleLabel.frame.origin.y - ((openTitleLabel.bounds.height - closedTitleLabel.bounds.height) / 2)))
+    }
+    
+}
+
+extension AnimationViewController {
+    
+    @IBAction private func handlePan(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
             startInteractiveTransition(state: !state, duration: duration)
@@ -69,169 +85,125 @@ class AnimationViewController: UIViewController {
         case .cancelled, .failed:
             continueInteractiveTransition(cancel: true)
         case .ended:
-            let isCancelled = isGestureCancelled(recognizer)
-            continueInteractiveTransition(cancel: isCancelled)
-        default:
-            break
+            continueInteractiveTransition(cancel: false)
+        default: break
         }
     }
     
-    // MARK: - Private
-    private func isGestureCancelled(_ recognizer: UIPanGestureRecognizer) -> Bool {
-        let isCancelled: Bool
-        
-        let velocityY = recognizer.velocity(in: control).y
-        if velocityY != 0 {
-            let isPanningDown = velocityY > 0
-            isCancelled = (state == .expanded && isPanningDown) ||
-                (state == .collapsed && !isPanningDown)
-        }
-        else {
-            isCancelled = false
-        }
-        
-        return isCancelled
-    }
-    
-    
-    private func animateTransitionIfNeeded(state: State, duration: TimeInterval) {
-        if runningAnimators == nil {
-            self.state = state
-            
-            let frameAnimator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1)
-            addToRunnningAnimators(frameAnimator) {
-                self.updateFrame(for: self.state)
-                self.updateBlurView(for: self.state)
-                self.updateLabel(for: self.state)
-            }
-            
-        }
-        
-    }
-
-    private func updateLabelTranslation(for state: State) {
-        switch state {
-        case .collapsed:
-            self.closedTitleLabel.transform = .identity
-            self.openTitleLabel.transform = CGAffineTransform(scaleX: 0.75, y: 0.75).concatenating(CGAffineTransform(translationX: 0, y: -10))
-        case .expanded:
-            self.closedTitleLabel.transform = CGAffineTransform(scaleX: 1.35, y: 1.35).concatenating(CGAffineTransform(translationX: 0, y: 10))
-            self.openTitleLabel.transform = .identity
-        }
-    }
-
-
-    private func animateOrReverseRunningTransition(state: State, duration: TimeInterval) {
-        if runningAnimators == nil {
-            animateTransitionIfNeeded(state: state, duration: duration)
-        }
-        else {
-            reverseRunningAnimations()
-        }
-    }
-    
-    
-    private func startInteractiveTransition(state: State, duration: TimeInterval) {
+    private func startInteractiveTransition(state: DrawerState, duration: TimeInterval) {
         animateTransitionIfNeeded(state: state, duration: duration)
-        
-        if let animator = runningAnimators {
-            animator.pauseAnimation()
-            progressWhenInterrupted = animator.fractionComplete
-        }
+        guard let animator = viewPropertyAnimator  else { return }
+        animator.pauseAnimation()
+        progressWhenInterrupted = animator.fractionComplete
     }
     
-    
-    func updateInteractiveTransition(distanceTraveled: CGFloat) {
-        let totalAnimationDistance = expandedControlTopMargin - collapsedControlTopMargin
-        let fractionComplete = distanceTraveled / totalAnimationDistance
-        if let animator = runningAnimators {
-            if let progressWhenInterrupted = progressWhenInterrupted {
-                let relativeFractionComplete = fractionComplete + progressWhenInterrupted
-                
-                if (state == .expanded && relativeFractionComplete > 0) ||
-                    (state == .collapsed && relativeFractionComplete < 0) {
-                    animator.fractionComplete = 0
-                }
-                else if (state == .expanded && relativeFractionComplete < -1) ||
-                    (state == .collapsed && relativeFractionComplete > 1) {
-                    animator.fractionComplete = 1
-                }
-                else {
-                    animator.fractionComplete = abs(fractionComplete) + progressWhenInterrupted
-                }
+    private func animateTransitionIfNeeded(state: DrawerState, duration: TimeInterval) {
+        if viewPropertyAnimator == nil {
+            self.state = state
+            let transitionAnimator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1)
+            setAnimationsAndCompletion(to: transitionAnimator) { [weak self] in
+                guard let weakSelf = self  else { return }
+                weakSelf.updateConstraints(for: weakSelf.state)
+                weakSelf.updateBlurView(for: weakSelf.state)
+                weakSelf.updateLabel(for: weakSelf.state)
+                weakSelf.updateCornerRadius(for: weakSelf.state)
             }
         }
     }
     
     
-    func continueInteractiveTransition(cancel: Bool) {
-        if cancel {
-            reverseRunningAnimations()
-        }
-        
-        let timing = UICubicTimingParameters(animationCurve: .easeOut)
-        if let animator = runningAnimators {
-            animator.continueAnimation(withTimingParameters: timing, durationFactor: 0)
-        }
-    }
-    
-    
-    
-    private func updateFrame(for state: State) {
-        switch state {
-        case .collapsed:
-            controlTopConstraint.constant = collapsedControlTopMargin
-        case .expanded:
-            controlTopConstraint.constant = expandedControlTopMargin
-        }
-        
-        view.layoutIfNeeded()
-    }
-
-    private func updateLabel(for state: State) {
-        updateLabelTranslation(for: state)
-        switch state {
-        case .collapsed:
-            self.closedTitleLabel.alpha = 1
-            self.openTitleLabel.alpha = 0
-        case .expanded:
-            self.closedTitleLabel.alpha = 0
-            self.openTitleLabel.alpha = 1
-        }
-    }
-    
-    
-    
-    private func updateBlurView(for state: State) {
-        switch state {
-        case .collapsed:
-            blurEffectView.effect = nil
-        case .expanded:
-            blurEffectView.effect = blurEffect
-        }
-    }
-    
-    private func addToRunnningAnimators(_ animator: UIViewPropertyAnimator,
-                                        animation: @escaping () -> Void) {
+    private func setAnimationsAndCompletion(to animator: UIViewPropertyAnimator, animation: @escaping () -> Void) {
         animator.addAnimations {
             animation()
         }
-        animator.addCompletion {
-            _ in
-            self.runningAnimators = nil
-            
+        animator.addCompletion { [weak self] _ in
+            self?.viewPropertyAnimator = nil
             animation()
         }
         
         animator.startAnimation()
-        runningAnimators = animator
+        viewPropertyAnimator = animator
+    }
+    
+    
+    private func updateInteractiveTransition(distanceTraveled: CGFloat) {
+        guard let animator = viewPropertyAnimator, let progressWhenInterrupted = progressWhenInterrupted  else { return }
+        let totalAnimationDistance = expandedControlTopMargin - collapsedControlTopMargin
+        let fractionComplete = distanceTraveled / totalAnimationDistance
+        let relativeFractionComplete = fractionComplete + progressWhenInterrupted
+        
+        if (state == .expanded && relativeFractionComplete > 0) || (state == .collapsed && relativeFractionComplete < 0) {
+            animator.fractionComplete = 0
+        } else if (state == .expanded && relativeFractionComplete < -1) || (state == .collapsed && relativeFractionComplete > 1) {
+            animator.fractionComplete = 1
+        } else {
+            animator.fractionComplete = abs(fractionComplete) + progressWhenInterrupted
+        }
+    }
+    
+    private func continueInteractiveTransition(cancel: Bool) {
+        cancel ? reverseRunningAnimations() : ()
+        guard let animator = viewPropertyAnimator  else { return }
+        let timing = UICubicTimingParameters(animationCurve: .easeOut)
+        animator.continueAnimation(withTimingParameters: timing, durationFactor: 0)
+    }
+
+}
+
+
+extension AnimationViewController {
+
+    @IBAction private func handleTap(_ recognizer: UITapGestureRecognizer) {
+        animateOrReverseRunningTransition(state: !state, duration: duration)
+    }
+    
+    private func animateOrReverseRunningTransition(state: DrawerState, duration: TimeInterval) {
+        if viewPropertyAnimator == nil {
+            animateTransitionIfNeeded(state: state, duration: duration)
+        } else {
+            reverseRunningAnimations()
+        }
     }
     
     private func reverseRunningAnimations() {
-        if let animator = runningAnimators {
+        if let animator = viewPropertyAnimator {
             animator.isReversed = !animator.isReversed
         }
-        
         state = !state
     }
+}
+
+
+extension AnimationViewController {
+    
+    private func updateLabel(for state: DrawerState) {
+        updateLabelTransition(for: state)
+        (closedTitleLabel.alpha, openTitleLabel.alpha) = state == .collapsed ? (1, 0) : (0, 1)
+    }
+    
+    private func updateLabelTransition(for state: DrawerState) {
+        switch state {
+        case .collapsed:
+            closedTitleLabel.transform = .identity
+            openTitleLabel.transform = CGAffineTransform(scaleX: closedDrawerTitleScale, y: closedDrawerTitleScale).concatenating(CGAffineTransform(translationX: 0, y: -closedDrawerTitleTranslation))
+        case .expanded:
+            closedTitleLabel.transform = CGAffineTransform(scaleX: 1/closedDrawerTitleScale, y: 1/closedDrawerTitleScale).concatenating(CGAffineTransform(translationX: 0, y: closedDrawerTitleTranslation))
+            openTitleLabel.transform = .identity
+        }
+    }
+    
+    private func updateConstraints(for state: DrawerState) {
+        controlTopConstraint.constant = state == .collapsed ? collapsedControlTopMargin : expandedControlTopMargin
+        view.layoutIfNeeded()
+    }
+    
+    private func updateCornerRadius(for state: DrawerState) {
+        drawer.layer.cornerRadius = state.cornerRadius
+    }
+
+    
+    private func updateBlurView(for state: DrawerState) {
+        blurEffectView.effect = state == .collapsed ? nil : blurEffect
+    }
+    
 }
